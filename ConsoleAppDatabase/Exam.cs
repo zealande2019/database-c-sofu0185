@@ -13,7 +13,7 @@ namespace ConsoleAppDatabase
 
         public override string ToString()
         {
-            return $"[ExamID: {ExamID}; Navn: {Navn}; Karakter: {Karakter};]";
+            return $"[ExamID: {ExamID}; Navn: {Navn}; Karakter: {Karakter}; StudentID: {StudentID};]";
         }
     }
 }

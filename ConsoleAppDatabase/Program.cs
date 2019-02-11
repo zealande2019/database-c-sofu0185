@@ -11,7 +11,7 @@ namespace ConsoleAppDatabase
             Console.WriteLine();
 
             Console.WriteLine("Opgave 3: Specifik eksamen");
-            Console.WriteLine($"\t{Facade.GetSpecifikExam(1)}\n");
+            Console.WriteLine($"\t{Facade.GetSpecifikExam(8)}\n");
 
             Console.WriteLine("Opgave 4: Delete eksamen");
             Console.WriteLine($"\tRows affected: {Facade.DeleteExam(8)}\n");
@@ -34,6 +34,10 @@ namespace ConsoleAppDatabase
                 Console.WriteLine("\t" + s);
                 s.Exams.ForEach(x => Console.WriteLine("\t\t" + x));
             }
+            Console.WriteLine();
+
+            Console.WriteLine("Extra opgave: Add Exam and get id back");
+            Console.WriteLine($"\tExam ID: {Facade.AddExamReturnId(new Exam() {Navn = "Prog", Karakter = "7", StudentID = 8})}");
             
             Console.ReadKey();
         }

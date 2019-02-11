@@ -45,7 +45,7 @@ namespace ConsoleAppDatabase
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = new SqlCommand(sqlQuery, connection)) {
-                command.Parameters.AddWithValue("@examID", examID);
+                command.Parameters.Add("@examID", SqlDbType.Int).Value = examID;
 
                 connection.Open();
                 using (SqlDataReader reader = command.ExecuteReader()) {
@@ -70,7 +70,7 @@ namespace ConsoleAppDatabase
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = new SqlCommand(sqlQuery, connection)) {
-                command.Parameters.AddWithValue("@examID", examID);
+                command.Parameters.Add("@examID", SqlDbType.Int).Value = examID;
 
                 connection.Open();
                 return command.ExecuteNonQuery();
@@ -83,10 +83,10 @@ namespace ConsoleAppDatabase
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = new SqlCommand(sqlQuery, connection)) {
-                command.Parameters.AddWithValue("@studentID", modifiedStudent.StudentID);
-                command.Parameters.AddWithValue("@navn", modifiedStudent.Navn);
-                command.Parameters.AddWithValue("@hold", modifiedStudent.Hold);
-                command.Parameters.AddWithValue("@mobilnr", modifiedStudent.MobilNr);
+                command.Parameters.Add("@studentID", SqlDbType.Int).Value = modifiedStudent.StudentID;
+                command.Parameters.Add("@navn", SqlDbType.NVarChar).Value = modifiedStudent.Navn;
+                command.Parameters.Add("@hold", SqlDbType.NVarChar).Value = modifiedStudent.Hold;
+                command.Parameters.Add("@mobilnr", SqlDbType.NVarChar).Value = modifiedStudent.MobilNr;
 
                 connection.Open();
                 return command.ExecuteNonQuery();
@@ -99,10 +99,10 @@ namespace ConsoleAppDatabase
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = new SqlCommand(sqlQuery, connection)) {
-                command.Parameters.AddWithValue("@studentID", newStudent.StudentID);
-                command.Parameters.AddWithValue("@navn", newStudent.Navn);
-                command.Parameters.AddWithValue("@hold", newStudent.Hold);
-                command.Parameters.AddWithValue("@mobilnr", newStudent.MobilNr);
+                command.Parameters.Add("@studentID", SqlDbType.Int).Value = newStudent.StudentID;
+                command.Parameters.Add("@navn", SqlDbType.NVarChar).Value = newStudent.Navn;
+                command.Parameters.Add("@hold", SqlDbType.NVarChar).Value = newStudent.Hold;
+                command.Parameters.Add("@mobilnr", SqlDbType.NVarChar).Value = newStudent.MobilNr;
 
                 connection.Open();
                 return command.ExecuteNonQuery();
@@ -199,6 +199,23 @@ namespace ConsoleAppDatabase
 
             students.ForEach(s => s.Exams.AddRange(exams.Where(x => x.StudentID == s.StudentID)));
             return students;
+        }
+
+        public static Exam AddExamReturnId(Exam newExam)
+        {
+            string sqlQuery = "INSERT INTO EXAM(Exam_Navn, Karakter, Student_Id) OUTPUT Inserted.Exam_Id VALUES(@navn, @karakter, @studentID)";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+            {
+                command.Parameters.Add("@studentID", SqlDbType.Int).Value = newExam.StudentID;
+                command.Parameters.Add("@navn", SqlDbType.NVarChar).Value = newExam.Navn;
+                command.Parameters.Add("@karakter", SqlDbType.NVarChar).Value = newExam.Karakter;
+
+                connection.Open();
+                newExam.ExamID = (int) command.ExecuteScalar();
+                return newExam;
+            }
         }
     }
 }
